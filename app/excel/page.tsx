@@ -22,13 +22,16 @@ const STEPS: Array<{ title: string; body: React.ReactNode; tie?: string }> = [
     ),
   },
   {
-    title: "Turn on filters",
+    title: "Turn on the filter first — this is what adds the arrows",
     body: (
       <>
-        Click any cell that has data, then on the ribbon go to the{" "}
-        <strong>Data</strong> tab ▸ <strong>Filter</strong> (the funnel icon). A
-        small dropdown arrow appears on every column header. Those arrows are how
-        you slice the export.
+        Click any cell that has data, then turn on <strong>AutoFilter</strong>:{" "}
+        <strong>Home</strong> tab ▸ <strong>Sort &amp; Filter</strong> ▸{" "}
+        <strong>Filter</strong> (or <strong>Data</strong> tab ▸{" "}
+        <strong>Filter</strong>). A checkmark next to <strong>Filter</strong> means
+        it’s on. <strong>This is the step that matters:</strong> only now does a
+        small dropdown arrow (▾) appear on each column header. If your headers have
+        no arrows, Filter isn’t on yet — come back here.
       </>
     ),
   },
@@ -36,10 +39,12 @@ const STEPS: Array<{ title: string; body: React.ReactNode; tie?: string }> = [
     title: "Sort oldest-first",
     body: (
       <>
-        Click the arrow on the <strong>Timestamp</strong> header ▸{" "}
-        <strong>Ascending</strong>. Because the timestamps are ISO-8601 (they start
-        with the year), sorting the text ascending also puts them in true
-        chronological order — oldest at the top.
+        Click the dropdown arrow Filter just added to the{" "}
+        <strong>Timestamp</strong> header and sort it{" "}
+        <strong>Ascending (A→Z)</strong> — or select the column and use{" "}
+        <strong>Sort &amp; Filter ▸ Sort A to Z</strong>. Because the timestamps are
+        ISO-8601 (they start with the year), sorting the text ascending also puts
+        them in true chronological order — oldest at the top.
       </>
     ),
     tie: "Method step 1 — sort oldest-first.",
@@ -48,9 +53,10 @@ const STEPS: Array<{ title: string; body: React.ReactNode; tie?: string }> = [
     title: "Split by destination",
     body: (
       <>
-        Click the arrow on <strong>Destination</strong> ▸ uncheck{" "}
-        <em>(Select All)</em> ▸ check only <code className="font-mono">google</code>{" "}
-        ▸ <strong>OK</strong>. You’re now reading just the Google timeline. Swap to{" "}
+        Click that same dropdown arrow on the <strong>Destination</strong> header ▸
+        uncheck <em>(Select All)</em> ▸ check only{" "}
+        <code className="font-mono">google</code> ▸ <strong>OK</strong>. You’re now
+        reading just the Google timeline. Swap to{" "}
         <code className="font-mono">activeDirectory</code> to read AD on its own.
       </>
     ),
