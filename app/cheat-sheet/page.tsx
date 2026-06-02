@@ -29,12 +29,13 @@ const KEY_FIELDS: Array<[string, string]> = [
 ];
 
 const GOTCHAS: string[] = [
-  "*Restricted = the catch-all when no config_string rule matches the incoming code. Usually a data problem, not a Clever bug.",
+  "Every district configures IDM differently — OU names, building codes, and folder paths all vary. *Restricted is this example only; learn the pattern, not the values.",
+  "Catch-all OU (here, *Restricted) = where accounts land when no config_string rule matches. Usually a data problem, not a Clever bug.",
   "null ≠ deleted — it means “not part of this event.”",
   "Google and AD are independent — verify each separately.",
   "Timestamps are UTC — convert to local before quoting.",
   "Malformed config_string (missing rule / run-together values) changes how it resolves.",
-  "One export = one user, not a district audit log.",
+  "An export’s scope is a filter you choose — it may hold one user or many. Check the Clever User ID / Username columns to know whose rows you’re reading.",
 ];
 
 export default function CheatSheet() {

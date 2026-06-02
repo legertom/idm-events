@@ -9,9 +9,13 @@ export type QuizItem =
     }
   | {
       id: string;
-      kind: "self";
+      kind: "order";
       prompt: string;
-      model: string[];
+      /** Steps in the CORRECT order. */
+      steps: string[];
+      /** Fixed starting arrangement (indices into steps) so it isn't pre-solved. */
+      scramble: number[];
+      explain: string;
     };
 
 export const QUIZ: QuizItem[] = [
@@ -46,18 +50,18 @@ export const QUIZ: QuizItem[] = [
     kind: "mcq",
     scenario: true,
     prompt:
-      "Scenario: an account is sitting in the *Restricted OU. What’s the most likely cause, and what do you check first?",
+      "Scenario: an account has landed in the district’s catch-all OU (in this example district, it’s named *Restricted). What’s the most likely cause, and what do you check first?",
     options: [
       { text: "Clever has a bug — escalate to engineering right away." },
       {
-        text: "The incoming building code didn’t match any rule in config_string — check the code on the user’s record against the rules.",
+        text: "The incoming value didn’t match any rule in config_string, so it fell through to the catch-all — check that value on the user’s record against the rules.",
         correct: true,
       },
       { text: "The destination is down — check Google’s status page." },
       { text: "The password failed to sync — re-push the password." },
     ],
     explain:
-      "*Restricted is the catch-all the template falls through to when no if-equals rule matches. It almost always means the source data didn’t match a mapping rule, not that Clever broke.",
+      "A catch-all OU is where accounts fall when no if-equals rule matches. It almost always means the source data didn’t match a mapping rule, not that Clever broke. (The name *Restricted is this district’s choice — other districts name theirs differently.)",
   },
   {
     id: "q4",
@@ -81,16 +85,19 @@ export const QUIZ: QuizItem[] = [
   },
   {
     id: "q5",
-    kind: "self",
+    kind: "order",
     prompt:
-      "In your own words, outline the 5-step method for tracing a problem in an export.",
-    model: [
+      "Put the 5-step method for tracing a problem in the right order (first to last).",
+    steps: [
       "Sort oldest-first so you read the story forward.",
       "Split by destination — read Google and AD as two parallel timelines.",
       "Find the matched events to see when each account was linked.",
-      "For each updated event, compare org_unit to reverse_data.previous_org_unit (and the same for groups / custom fields).",
-      "When something’s wrong, read the config_string — most placement and naming behavior comes from that template.",
+      "For each updated event, compare org_unit to reverse_data.previous_org_unit.",
+      "When something’s wrong, read the config_string that drives placement.",
     ],
+    scramble: [2, 4, 0, 3, 1],
+    explain:
+      "Sort → split → find the anchors (matched) → diff org_unit vs previous → read the config_string. Reading forward and splitting per destination makes the story legible before you dig into any single event.",
   },
 ];
 

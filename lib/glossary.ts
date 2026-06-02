@@ -12,12 +12,16 @@ export const GLOSSARY: GlossaryItem[] = [
   { term: "OU (organizational unit)", def: "The folder an account lives in." },
   {
     term: "*Restricted",
-    def: "The default catch-all OU used when no config_string rule matches the incoming code.",
+    def: "This example district's catch-all OU — where accounts land when no config_string rule matches. The name (and whether one exists) varies by district.",
   },
   { term: "config_string", def: "The template that drives OU placement." },
   {
-    term: "Match vs. update",
-    def: "Match links a user to a destination account; update pushes a change to a linked account.",
+    term: "Match",
+    def: "idm-user-matched — Clever found a destination account and linked it to the Clever user.",
+  },
+  {
+    term: "Update",
+    def: "idm-user-updated — Clever pushed a change to an already-linked account.",
   },
   {
     term: "Account claim",

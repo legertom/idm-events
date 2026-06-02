@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ModuleLayout } from "@/components/ModuleLayout";
 import { Callout } from "@/components/Callout";
 import { CheckQuestion } from "@/components/CheckQuestion";
@@ -6,8 +7,12 @@ import { GLOSSARY } from "@/lib/glossary";
 
 const GOTCHAS: Array<{ title: string; body: string }> = [
   {
-    title: "*Restricted is the catch-all OU",
-    body: "When the incoming code matches no if-equals rule in config_string, the template falls through to a default usually named *Restricted. It almost always means the source data didn’t match a mapping rule — not that Clever broke. Check the code on the user’s record against the rules.",
+    title: "Every district is configured differently",
+    body: "OU names, building codes, folder paths, group names, and even the catch-all OU’s name are all set per district. *Restricted belongs to Jordan’s district — another district’s export will look different in every specific. The method and the field meanings carry over; the values don’t. Learn the pattern, not these names.",
+  },
+  {
+    title: "The catch-all OU (here, *Restricted)",
+    body: "When the incoming code matches no rule in config_string, the template falls through to a catch-all OU. Jordan’s district named it *Restricted — yours may use a different name, or none at all. An account there almost always means the source data didn’t match a mapping rule, not that Clever broke. Check the code on the user’s record against the rules.",
   },
   {
     title: "Read config_string for breakage",
@@ -30,8 +35,8 @@ const GOTCHAS: Array<{ title: string; body: string }> = [
     body: "Means a change was queued to write out — useful when a customer says “Clever knew, but the destination never updated.”",
   },
   {
-    title: "One export = one user",
-    body: "It is not a district-wide audit log. Pull one export per user you’re investigating.",
+    title: "Don’t assume the export’s scope",
+    body: "An export can contain one user or many — it depends on the filter used to generate it. This course’s file was filtered to a single user. When you open an unfamiliar one, check the Clever User ID / Username columns to see whose actions you’re reading, and narrow to your user if it spans several.",
   },
 ];
 
@@ -91,6 +96,17 @@ export default function Module5() {
           },
         ]}
       />
+
+      <Callout tone="tip" title="Skip the mental math">
+        Converting UTC to local in your head is error-prone. The{" "}
+        <Link
+          href="/timestamp"
+          className="font-semibold text-brand-700 underline"
+        >
+          timestamp converter
+        </Link>{" "}
+        turns any export timestamp into ET, CT, MT, or PT (daylight-saving aware).
+      </Callout>
     </ModuleLayout>
   );
 }

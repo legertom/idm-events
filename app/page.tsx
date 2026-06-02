@@ -1,4 +1,6 @@
+import Link from "next/link";
 import { CourseOverview } from "@/components/CourseOverview";
+import { DownloadCsv } from "@/components/DownloadCsv";
 
 export default function HomePage() {
   return (
@@ -12,16 +14,17 @@ export default function HomePage() {
           <span className="text-brand-600">IDM events export</span>
         </h1>
         <p className="mt-4 max-w-2xl text-lg leading-8 text-ink-soft">
-          An events export is the receipt for everything Clever did to one user’s
-          account. By the end of this short course you’ll open one, reconstruct
+          An events export is the receipt for everything Clever did to a user’s
+          account, action by action. By the end of this short course you’ll open
+          one, reconstruct
           what happened over time, and tell whether a problem came from{" "}
           <strong className="font-semibold text-ink">Clever</strong> or from the{" "}
           <strong className="font-semibold text-ink">data Clever received</strong>.
         </p>
         <div className="mt-5 flex flex-wrap gap-2 text-sm">
-          <Pill>~25 minutes</Pill>
+          <Pill>~35 minutes</Pill>
           <Pill>5 modules + quiz</Pill>
-          <Pill>One real (anonymized) export</Pill>
+          <Pill>Follow along in Excel</Pill>
           <Pill>No JSON experience needed</Pill>
         </div>
       </section>
@@ -33,14 +36,23 @@ export default function HomePage() {
           You’ll follow one teacher the whole way
         </h2>
         <p className="mt-2 text-[15px] leading-7 text-ink-soft">
-          Every example uses a single anonymized export for{" "}
-          <strong className="font-semibold text-ink">Jordan Avery</strong>, a
-          teacher whose account drifted into the <code className="font-mono">*Restricted</code>{" "}
+          Every example uses one anonymized export — filtered to a single teacher,{" "}
+          <strong className="font-semibold text-ink">Jordan Avery</strong> — whose
+          account drifted into the <code className="font-mono">*Restricted</code>{" "}
           folder and then got fixed. You’ll watch it happen across Google and
           Active Directory, and learn to spot exactly why — using the same buttons
           and panels a real export gives you.
         </p>
-        <p className="mt-2 text-xs text-ink-muted">
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <DownloadCsv variant="subtle" />
+          <Link
+            href="/excel"
+            className="focus-ring rounded-lg text-sm font-medium text-brand-700 hover:underline"
+          >
+            Open it in Excel and follow along →
+          </Link>
+        </div>
+        <p className="mt-3 text-xs text-ink-muted">
           Jordan Avery and <code className="font-mono">maplewood.example.org</code>{" "}
           are fictional stand-ins; all names, emails, and IDs have been scrubbed.
         </p>

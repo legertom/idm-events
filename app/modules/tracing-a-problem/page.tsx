@@ -96,6 +96,19 @@ export default function Module4() {
         fix lived in the <strong>customer’s data</strong>, not in Clever.
       </Callout>
 
+      <Callout tone="warning" title="Important: this is one district’s setup">
+        <code className="font-mono">*Restricted</code>, building codes like{" "}
+        <code className="font-mono">340</code>, and folder paths like{" "}
+        <code className="font-mono">/AllUsers/Staff/…</code> are{" "}
+        <strong>specific to Jordan’s district</strong> — they won’t appear in other
+        districts’ exports. Every district configures IDM its own way: different OU
+        names, a differently named (or absent) catch-all, different codes, a
+        different folder layout. Don’t memorize these values — memorize the{" "}
+        <strong>pattern</strong>: find where accounts pile up, read the{" "}
+        <code className="font-mono">config_string</code>, and check the incoming
+        value against its rules.
+      </Callout>
+
       <CheckQuestion
         question="You’ve sorted oldest-first and split by destination. The last Google event still shows *Restricted, but you see a later AD event placing the user correctly. What’s the safest read?"
         options={[

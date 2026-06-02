@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import type { EventContent } from "@/lib/types";
 import { prettyJson } from "@/lib/events";
 
@@ -52,10 +53,26 @@ export function JsonViewer({
 }) {
   const [annotate, setAnnotate] = useState(defaultAnnotate);
   const [dimNulls, setDimNulls] = useState(false);
+  const [tooltip, setTooltip] = useState<
+    { key: string; note: string; top: number; left: number } | null
+  >(null);
   const lines = useMemo(() => prettyJson(content).split("\n"), [content]);
 
+  const showTip = (el: HTMLElement, key: string, note: string) => {
+    const r = el.getBoundingClientRect();
+    const maxLeft = window.innerWidth - 328;
+    setTooltip({
+      key,
+      note,
+      top: r.bottom + 8,
+      left: Math.max(12, Math.min(r.left, maxLeft)),
+    });
+  };
+  const hideTip = () => setTooltip(null);
+
   return (
-    <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
+    <>
+      <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
       <div className="flex flex-wrap items-center gap-2 border-b border-slate-200 bg-white px-3 py-2">
         <span className="mr-auto font-mono text-xs text-ink-muted">Data → content</span>
         <Toggle on={annotate} onClick={() => setAnnotate((v) => !v)}>
@@ -81,23 +98,39 @@ export function JsonViewer({
           }
 
           const [, indent, key, rest] = m;
-          const note = annotate ? FIELD_NOTES[key] : undefined;
+          const fieldNote = FIELD_NOTES[key];
+          const showInline = annotate && Boolean(fieldNote);
 
           return (
             <div
               key={i}
               className={`${faded ? "opacity-25" : ""} ${
-                note ? "-mx-1 rounded bg-amber-50/70 px-1" : ""
+                showInline ? "-mx-1 rounded bg-amber-50/70 px-1" : ""
               }`}
             >
               <span>{indent}</span>
-              <span className={note ? "font-semibold text-brand-800" : "text-brand-700"}>
+              <span
+                className={`${fieldNote ? "cursor-help" : ""} ${
+                  showInline
+                    ? "font-semibold text-brand-800 underline decoration-dotted decoration-brand-400/60 underline-offset-4"
+                    : "text-brand-700"
+                }`}
+                tabIndex={fieldNote ? 0 : undefined}
+                onMouseEnter={
+                  fieldNote ? (e) => showTip(e.currentTarget, key, fieldNote) : undefined
+                }
+                onMouseLeave={fieldNote ? hideTip : undefined}
+                onFocus={
+                  fieldNote ? (e) => showTip(e.currentTarget, key, fieldNote) : undefined
+                }
+                onBlur={fieldNote ? hideTip : undefined}
+              >
                 &quot;{key}&quot;
               </span>
               <span className="text-slate-400">:</span>
               <span className={valueClass(rest)}>{rest}</span>
-              {note && (
-                <span className="text-amber-700/90">{"  ← "}{note}</span>
+              {showInline && (
+                <span className="text-amber-700/90">{"  ← "}{fieldNote}</span>
               )}
             </div>
           );
@@ -110,7 +143,24 @@ export function JsonViewer({
           of this change,” <strong className="font-semibold text-ink">not deleted.</strong>
         </div>
       )}
-    </div>
+      </div>
+
+      {tooltip &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <div
+            role="tooltip"
+            className="pointer-events-none fixed z-[60] max-w-xs animate-fade-in rounded-lg bg-ink px-3 py-2 text-xs leading-5 text-white shadow-xl"
+            style={{ top: tooltip.top, left: tooltip.left }}
+          >
+            <span className="font-mono text-[11px] font-semibold text-brand-200">
+              {tooltip.key}
+            </span>
+            <span className="mt-0.5 block text-slate-100">{tooltip.note}</span>
+          </div>,
+          document.body,
+        )}
+    </>
   );
 }
 

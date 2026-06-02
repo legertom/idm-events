@@ -37,6 +37,18 @@ export function SiteHeader() {
             </span>
           </div>
           <Link
+            href="/excel"
+            className="focus-ring rounded-lg px-2.5 py-1.5 text-xs font-medium text-ink-soft hover:bg-slate-100"
+          >
+            Excel
+          </Link>
+          <Link
+            href="/timestamp"
+            className="focus-ring rounded-lg px-2.5 py-1.5 text-xs font-medium text-ink-soft hover:bg-slate-100"
+          >
+            Time tool
+          </Link>
+          <Link
             href="/cheat-sheet"
             className="focus-ring rounded-lg px-2.5 py-1.5 text-xs font-medium text-ink-soft hover:bg-slate-100"
           >

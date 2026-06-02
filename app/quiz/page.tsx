@@ -16,8 +16,8 @@ export default function QuizPage() {
           Final quiz
         </h1>
         <p className="mt-2 max-w-2xl text-[15px] leading-7 text-ink-soft">
-          Five questions — three recall, two real scenarios, and one short answer
-          you grade yourself. Pick your answers, then submit to see your score and
+          Five questions — multiple choice (including two real scenarios) plus one
+          put-the-steps-in-order. Make your picks, then submit to see your score and
           a full answer key. Retake it as many times as you like.
         </p>
       </div>

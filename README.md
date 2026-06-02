@@ -1,9 +1,9 @@
 # Reading Clever IDM Events Exports — CS Training
 
 An interactive, self-contained onboarding course that teaches new Customer Support
-hires how to read a **Clever IDM events export** (the CSV action-history log for a
-single user) and judge whether a problem came from Clever or from the data Clever
-received.
+hires how to read a **Clever IDM events export** (a CSV log of sync actions, scoped by a
+filter when you generate it — here, to a single user) and judge whether a problem
+came from Clever or from the data Clever received.
 
 Built with **Next.js (App Router) + React + Tailwind CSS**. Deployable to Vercel
 with zero configuration.
@@ -12,7 +12,7 @@ with zero configuration.
 
 Five short modules (~25 min total) plus a one-page cheat sheet and a scored quiz:
 
-1. **What an events export is** — purpose, one-user scope, CS use cases
+1. **What an events export is** — purpose, scope & filtering, CS use cases
 2. **The seven columns** — interactive column explorer; Data holds the detail
 3. **Reading the Data field** — annotated JSON viewer with a "dim the nulls" toggle that drives home `null ≠ deleted`
 4. **Tracing a problem** — the 5-step method, an event timeline, an OU-diff widget, and a `config_string` simulator

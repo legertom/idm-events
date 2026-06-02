@@ -23,7 +23,7 @@ const COLS: Col[] = [
   {
     key: "Clever User ID",
     sample: "64f9a1c2e8b7d3046a5f9e10",
-    desc: "Clever's internal unique ID for the user (24-char hex). The same value appears as clever_id inside Data.",
+    desc: "Clever's internal unique ID for the user (24-char hex). The same value appears as clever_id inside Data. If an export covers several people, this is how you tell whose rows are whose.",
   },
   {
     key: "Username",

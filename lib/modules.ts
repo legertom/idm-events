@@ -16,7 +16,7 @@ export const MODULES: ModuleMeta[] = [
       "Explain what an events export shows and when a CS agent should pull one.",
     minutes: 4,
     blurb:
-      "One user, one action per row. The receipt of everything Clever did to an account.",
+      "Each row is one action Clever took — this export filtered to a single user.",
   },
   {
     slug: "the-columns",
@@ -31,10 +31,10 @@ export const MODULES: ModuleMeta[] = [
     order: 3,
     title: "Reading the Data field",
     objective:
-      "Navigate the Data JSON by category and apply the null ≠ deleted rule.",
-    minutes: 7,
+      "Navigate the Data JSON by category, read its complex parts, and apply the null ≠ deleted rule.",
+    minutes: 11,
     blurb:
-      "JSON without the fear: learn the field groups and the five fields that matter most.",
+      "JSON without the fear: the field groups, the five fields that matter, and how to read the complex parts.",
   },
   {
     slug: "tracing-a-problem",

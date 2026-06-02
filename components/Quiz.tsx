@@ -4,15 +4,21 @@ import { useEffect, useMemo, useState } from "react";
 import { QUIZ, QUIZ_TOTAL } from "@/lib/quiz";
 import { useProgress } from "./ProgressProvider";
 
+function initialOrders(): Record<string, number[]> {
+  const o: Record<string, number[]> = {};
+  for (const q of QUIZ) if (q.kind === "order") o[q.id] = [...q.scramble];
+  return o;
+}
+
 export function Quiz() {
   const { recordQuiz, markComplete, quizBest } = useProgress();
   const [answers, setAnswers] = useState<Record<string, number>>({});
-  const [selfRevealed, setSelfRevealed] = useState(false);
-  const [selfCorrect, setSelfCorrect] = useState<boolean | null>(null);
+  const [orders, setOrders] = useState<Record<string, number[]>>(initialOrders);
   const [submitted, setSubmitted] = useState(false);
 
-  const mcqs = QUIZ.filter((q) => q.kind === "mcq");
-  const allMcqAnswered = mcqs.every((q) => answers[q.id] !== undefined);
+  const allMcqAnswered = QUIZ.filter((q) => q.kind === "mcq").every(
+    (q) => answers[q.id] !== undefined,
+  );
 
   const score = useMemo(() => {
     let s = 0;
@@ -20,12 +26,13 @@ export function Quiz() {
       if (q.kind === "mcq") {
         const picked = answers[q.id];
         if (picked !== undefined && q.options[picked]?.correct) s += 1;
-      } else if (selfCorrect) {
-        s += 1;
+      } else if (q.kind === "order") {
+        const arr = orders[q.id] ?? [];
+        if (arr.length === q.steps.length && arr.every((v, i) => v === i)) s += 1;
       }
     }
     return s;
-  }, [answers, selfCorrect]);
+  }, [answers, orders]);
 
   useEffect(() => {
     if (submitted) {
@@ -34,12 +41,23 @@ export function Quiz() {
     }
   }, [submitted, score, recordQuiz, markComplete]);
 
+  const move = (qid: string, pos: number, dir: -1 | 1) => {
+    if (submitted) return;
+    setOrders((prev) => {
+      const arr = [...(prev[qid] ?? [])];
+      const j = pos + dir;
+      if (j < 0 || j >= arr.length) return prev;
+      [arr[pos], arr[j]] = [arr[j], arr[pos]];
+      return { ...prev, [qid]: arr };
+    });
+  };
+
   const reset = () => {
     setAnswers({});
-    setSelfRevealed(false);
-    setSelfCorrect(null);
+    setOrders(initialOrders());
     setSubmitted(false);
-    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+    if (typeof window !== "undefined")
+      window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
@@ -58,7 +76,10 @@ export function Quiz() {
                 ? "Solid. Review the explanations below, then you’re ready to take a real export."
                 : "Worth another pass — skim the modules, then retake."}
             {quizBest !== null && quizBest !== score && (
-              <span className="text-ink-muted"> · Best: {quizBest}/{QUIZ_TOTAL}</span>
+              <span className="text-ink-muted">
+                {" "}
+                · Best: {quizBest}/{QUIZ_TOTAL}
+              </span>
             )}
           </p>
           <button
@@ -84,9 +105,9 @@ export function Quiz() {
                     Scenario
                   </span>
                 )}
-                {q.kind === "self" && (
+                {q.kind === "order" && (
                   <span className="mb-1 inline-block rounded bg-violet-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-violet-800">
-                    Short answer
+                    Put in order
                   </span>
                 )}
                 <p className="font-medium text-ink">{q.prompt}</p>
@@ -111,9 +132,7 @@ export function Quiz() {
                       key={oi}
                       type="button"
                       disabled={submitted}
-                      onClick={() =>
-                        setAnswers((a) => ({ ...a, [q.id]: oi }))
-                      }
+                      onClick={() => setAnswers((a) => ({ ...a, [q.id]: oi }))}
                       className={`focus-ring flex items-start gap-3 rounded-xl border px-4 py-2.5 text-left text-sm transition-colors ${cls}`}
                     >
                       <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full border border-current text-[11px] font-bold opacity-70">
@@ -134,49 +153,13 @@ export function Quiz() {
                 )}
               </div>
             ) : (
-              <div className="mt-3 pl-8">
-                <button
-                  type="button"
-                  onClick={() => setSelfRevealed(true)}
-                  className="focus-ring rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-medium text-ink-soft hover:bg-slate-50"
-                >
-                  {selfRevealed ? "Model answer ↓" : "Reveal model answer"}
-                </button>
-                {selfRevealed && (
-                  <div className="mt-3 animate-fade-in rounded-xl bg-slate-50 p-4">
-                    <ol className="list-decimal space-y-1 pl-5 text-sm leading-6 text-ink-soft">
-                      {q.model.map((m, i) => (
-                        <li key={i}>{m}</li>
-                      ))}
-                    </ol>
-                    <div className="mt-3 flex items-center gap-2 border-t border-slate-200 pt-3">
-                      <span className="text-sm text-ink-soft">Did you cover the key points?</span>
-                      <button
-                        type="button"
-                        onClick={() => setSelfCorrect(true)}
-                        className={`focus-ring rounded-lg px-2.5 py-1 text-xs font-semibold ${
-                          selfCorrect === true
-                            ? "bg-emerald-600 text-white"
-                            : "border border-slate-200 text-ink-soft hover:bg-white"
-                        }`}
-                      >
-                        Yes, give me the point
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setSelfCorrect(false)}
-                        className={`focus-ring rounded-lg px-2.5 py-1 text-xs font-semibold ${
-                          selfCorrect === false
-                            ? "bg-slate-600 text-white"
-                            : "border border-slate-200 text-ink-soft hover:bg-white"
-                        }`}
-                      >
-                        Not quite
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
+              <OrderQuestion
+                steps={q.steps}
+                arrangement={orders[q.id] ?? []}
+                submitted={submitted}
+                explain={q.explain}
+                onMove={(pos, dir) => move(q.id, pos, dir)}
+              />
             )}
           </li>
         ))}
@@ -197,6 +180,101 @@ export function Quiz() {
               Answer all multiple-choice questions to submit.
             </span>
           )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function OrderQuestion({
+  steps,
+  arrangement,
+  submitted,
+  explain,
+  onMove,
+}: {
+  steps: string[];
+  arrangement: number[];
+  submitted: boolean;
+  explain: string;
+  onMove: (pos: number, dir: -1 | 1) => void;
+}) {
+  const allCorrect =
+    arrangement.length === steps.length && arrangement.every((v, i) => v === i);
+
+  return (
+    <div className="mt-3 pl-8">
+      {!submitted && (
+        <p className="mb-2 text-xs text-ink-muted">
+          Use the arrows to put the steps in order, first to last.
+        </p>
+      )}
+      <ol className="space-y-2">
+        {arrangement.map((stepIdx, pos) => {
+          const here = submitted && stepIdx === pos;
+          const off = submitted && stepIdx !== pos;
+          let cls = "border-slate-200 bg-white";
+          if (here) cls = "border-emerald-400 bg-emerald-50";
+          else if (off) cls = "border-amber-300 bg-amber-50";
+
+          return (
+            <li
+              key={stepIdx}
+              className={`flex items-center gap-3 rounded-xl border px-3 py-2.5 ${cls}`}
+            >
+              <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-slate-100 text-xs font-bold text-ink-soft">
+                {pos + 1}
+              </span>
+              <span className="flex-1 text-sm text-ink">{steps[stepIdx]}</span>
+              {submitted ? (
+                <span
+                  className={`text-sm font-bold ${here ? "text-emerald-600" : "text-amber-600"}`}
+                >
+                  {here ? "✓" : "✕"}
+                </span>
+              ) : (
+                <span className="flex flex-col">
+                  <button
+                    type="button"
+                    aria-label="Move up"
+                    disabled={pos === 0}
+                    onClick={() => onMove(pos, -1)}
+                    className="focus-ring rounded px-1 leading-none text-ink-muted hover:text-brand-700 disabled:opacity-20"
+                  >
+                    ▲
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Move down"
+                    disabled={pos === arrangement.length - 1}
+                    onClick={() => onMove(pos, 1)}
+                    className="focus-ring rounded px-1 leading-none text-ink-muted hover:text-brand-700 disabled:opacity-20"
+                  >
+                    ▼
+                  </button>
+                </span>
+              )}
+            </li>
+          );
+        })}
+      </ol>
+      {submitted && (
+        <div className="mt-3 rounded-lg bg-slate-50 p-3 text-sm leading-6 text-ink-soft">
+          {allCorrect ? (
+            <p className="font-semibold text-emerald-700">Correct order.</p>
+          ) : (
+            <>
+              <p className="font-semibold text-rose-700">
+                Not quite. The correct sequence is:
+              </p>
+              <ol className="mt-1 list-decimal space-y-0.5 pl-5">
+                {steps.map((s, i) => (
+                  <li key={i}>{s}</li>
+                ))}
+              </ol>
+            </>
+          )}
+          <p className="mt-2">{explain}</p>
         </div>
       )}
     </div>
