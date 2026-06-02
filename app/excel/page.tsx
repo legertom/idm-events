@@ -17,7 +17,9 @@ const STEPS: Array<{ title: string; body: React.ReactNode; tie?: string }> = [
         <strong>Open With ▸ Microsoft Excel</strong>. You’ll see{" "}
         <strong>seven columns</strong> and <strong>twelve rows</strong> (newest
         first). The <code className="font-mono">Data</code> column looks enormous —
-        that’s normal. The entire JSON for each event lives in that one cell.
+        that’s normal. The entire JSON for each event lives in that one cell. Excel
+        may show a yellow “Possible Data Loss” bar about the .csv format — ignore
+        it; you’re only reading, not saving.
       </>
     ),
   },
@@ -25,13 +27,12 @@ const STEPS: Array<{ title: string; body: React.ReactNode; tie?: string }> = [
     title: "Turn on the filter first — this is what adds the arrows",
     body: (
       <>
-        Click any cell that has data, then turn on <strong>AutoFilter</strong>:{" "}
-        <strong>Home</strong> tab ▸ <strong>Sort &amp; Filter</strong> ▸{" "}
-        <strong>Filter</strong> (or <strong>Data</strong> tab ▸{" "}
-        <strong>Filter</strong>). A checkmark next to <strong>Filter</strong> means
-        it’s on. <strong>This is the step that matters:</strong> only now does a
-        small dropdown arrow (▾) appear on each column header. If your headers have
-        no arrows, Filter isn’t on yet — come back here.
+        Click any cell that has data, then, on the <strong>Home</strong> tab, click{" "}
+        <strong>Sort &amp; Filter</strong> (top-right of the ribbon — the A–Z funnel
+        icon) ▸ <strong>Filter</strong>. A checkmark next to <strong>Filter</strong>{" "}
+        means it’s on. <strong>This is the step that matters:</strong> only now does
+        a small dropdown arrow (▾) appear on each column header. If your headers
+        have no arrows, Filter isn’t on yet — come back here.
       </>
     ),
   },
@@ -145,9 +146,7 @@ export default function ExcelPage() {
         Every <code className="font-mono">Data</code> cell is{" "}
         <code className="font-mono">{`{"content": { … }}`}</code> — one big{" "}
         <code className="font-mono">content</code> object holding all the fields.
-        That’s exactly what the course’s Data panels show you, one level in. If the
-        columns don’t split on open, use <strong>Data ▸ Text to Columns ▸
-        Delimited ▸ Comma</strong>.
+        That’s exactly what the course’s Data panels show you, one level in.
       </Callout>
 
       <Callout tone="info" title="It’s the same method, just in a spreadsheet">
