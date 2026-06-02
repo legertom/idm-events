@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+    "Liberation Mono", monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-slate-50 text-ink antialiased;
+}
+
+/* Thin, calm scrollbars inside code/JSON panels */
+.scroll-slim::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+.scroll-slim::-webkit-scrollbar-thumb {
+  @apply rounded-full bg-slate-300;
+}
+.scroll-slim::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+/* Focus ring used across interactive widgets */
+.focus-ring {
+  outline: none;
+}
+.focus-ring:focus-visible {
+  outline: 2px solid #3563ff; /* brand-500 */
+  outline-offset: 2px;
+}
+
+@layer components {
+  .prose-course p {
+    @apply text-[15px] leading-7 text-ink-soft;
+  }
+  .prose-course strong {
+    @apply font-semibold text-ink;
+  }
+  .card {
+    @apply rounded-2xl border border-slate-200 bg-white shadow-sm;
+  }
+}
